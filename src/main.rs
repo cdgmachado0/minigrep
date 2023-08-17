@@ -11,14 +11,19 @@ fn main() {
         process::exit(1);
     });
 
-    run(config);
-}
-
-fn run(config: Config) {
-    let contents = fs::read_to_string(config.file_path)
-        .expect("Should have been able to read the file");
+    let contents = run(config).unwrap_or_else(|err| {
+        println!("{err}");
+        process::exit(1);
+    });
 
     println!("With text:\n{contents}");
+}
+
+fn run(config: Config) -> Result<String, &'static str> {
+    match fs::read_to_string(config.file_path) {
+        Ok(string) => Ok(string),
+        Err(_) => Err("Should have been able to read the file"),
+    }
 }
 
 
