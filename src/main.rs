@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 
 fn main() {
@@ -10,20 +11,19 @@ fn main() {
         println!("Problem parsing arguments: {err}");
         process::exit(1);
     });
-
-    let contents = run(config).unwrap_or_else(|err| {
-        println!("{err}");
+    
+    if let Err(e) = run(config) {
+        println!("Application Error: {e}");
         process::exit(1);
-    });
-
-    println!("With text:\n{contents}");
+    }
 }
 
-fn run(config: Config) -> Result<String, &'static str> {
-    match fs::read_to_string(config.file_path) {
-        Ok(string) => Ok(string),
-        Err(_) => Err("Should have been able to read the file"),
-    }
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
+
+    println!("With text:\n{contents}");
+
+    Ok(())
 }
 
 
