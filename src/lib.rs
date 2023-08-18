@@ -111,7 +111,16 @@ Trust me.";
             vec!["Rust:", "Trust me."],
             search_case_insensitive(query, contents)
         );
+    }
 
+    #[test]
+    fn cli_case_precedence() {
+        env::set_var("IGNORE_CASE", "1");
+        let args = vec!["to", "poem.txt", "false"];
+        let args: Vec<String> = args.iter().map(|el| el.to_string()).collect();
+
+        let config = Config::build(&args).unwrap();
+        let _ = run(config);
     }
 
 }
