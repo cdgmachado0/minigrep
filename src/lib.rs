@@ -36,7 +36,6 @@ impl Config {
         };
 
         Ok(Config { query, file_path, ignore_case })
-
     }
 }
 
