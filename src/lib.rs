@@ -13,7 +13,7 @@ pub struct Config {
 impl Config {
     pub fn build(args: &[String]) -> Result<Self, Box<dyn Error>> { 
         if args.len() < 3 {
-            return Err("Not enough arguments".into());
+            return Err(Box::<dyn Error>::from("Not enough arguments"));
         } 
 
         let query = args[1].clone();
@@ -28,7 +28,7 @@ impl Config {
                 Ok(is_case) => is_case,
                 Err(e) => {
                     let err_msg = format!("Invalid case flag: {}", e);
-                    return Err(err_msg.into());
+                    return Err(Box::<dyn Error>::from(err_msg));
                 }
             }
         } else {
@@ -38,6 +38,7 @@ impl Config {
         Ok(Config { query, file_path, ignore_case })
     }
 }
+
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
