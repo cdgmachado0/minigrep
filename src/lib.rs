@@ -1,6 +1,7 @@
 use std::error::Error;
 use std::fs;
 use std::env;
+use std::str::ParseBoolError;
 
 
 pub struct Config {
@@ -10,17 +11,33 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Self, &'static str> {
+    pub fn build(args: &[String]) -> Result<Self, Box<dyn Error>> { 
         if args.len() < 3 {
-            return Err("Not enough arguments");
+            return Err("Not enough arguments".into());
         } 
 
         let query = args[1].clone();
         let file_path = args[2].clone();
+        let mut ignore_case = false;
 
-        let ignore_case = env::var("IGNORE_CASE").is_ok();
+        if args.len() == 4 {
+            let case: Result<bool, ParseBoolError> = args[3]
+                .clone()
+                .parse();
+            
+            match case {
+                Ok(is_case) => ignore_case = is_case,
+                Err(e) => {
+                    let err_msg = format!("Invalid case flag: {}", e);
+                    return Err(err_msg.into());
+                }
+            }
+        } else {
+            ignore_case = env::var("IGNORE_CASE").is_ok();
+        }
 
         Ok(Config { query, file_path, ignore_case })
+
     }
 }
 

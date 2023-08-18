@@ -38,7 +38,7 @@
                     "kind": "bin"
                 }
             },
-            "args": [],
+            "args": ["to", "poem.txt", "true"],
             "cwd": "${workspaceFolder}"
         },
         {
