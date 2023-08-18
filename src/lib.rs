@@ -18,23 +18,22 @@ impl Config {
 
         let query = args[1].clone();
         let file_path = args[2].clone();
-        let mut ignore_case = false;
 
-        if args.len() == 4 {
+        let ignore_case = if args.len() == 4 {
             let case: Result<bool, ParseBoolError> = args[3]
                 .clone()
                 .parse();
             
             match case {
-                Ok(is_case) => ignore_case = is_case,
+                Ok(is_case) => is_case,
                 Err(e) => {
                     let err_msg = format!("Invalid case flag: {}", e);
                     return Err(err_msg.into());
                 }
             }
         } else {
-            ignore_case = env::var("IGNORE_CASE").is_ok();
-        }
+            env::var("IGNORE_CASE").is_ok()
+        };
 
         Ok(Config { query, file_path, ignore_case })
 
