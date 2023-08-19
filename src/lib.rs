@@ -40,7 +40,7 @@ impl Config {
 }
 
 
-pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
+pub fn run(config: Config) -> Result<Vec<String>, Box<dyn Error>> {
     let contents = fs::read_to_string(config.file_path)?;
 
     let results = if config.ignore_case {
@@ -49,11 +49,11 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
         search(&config.query, &contents)
     };
 
-    for line in results {
+    for line in &results {
         println!("{line}");
     }
 
-    Ok(())
+    Ok(results.iter().map(|el| el.to_string()).collect())
 }
 
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
@@ -114,13 +114,27 @@ Trust me.";
     }
 
     #[test]
-    fn cli_case_precedence() {
+    fn cli_case_precedence_false() {
         env::set_var("IGNORE_CASE", "1");
-        let args = vec!["to", "poem.txt", "false"];
+        let args = vec![" ", "to", "poem.txt", "false"];
         let args: Vec<String> = args.iter().map(|el| el.to_string()).collect();
 
         let config = Config::build(&args).unwrap();
-        let _ = run(config);
+        let results = run(config).unwrap();
+
+        assert_eq!(results.len(), 2);
     }
 
+    #[test]
+    fn cli_case_precedence_true() {
+        env::set_var("IGNORE_CASE", "1");
+        let args = vec![" ", "to", "poem.txt", "true"];
+        let args: Vec<String> = args.iter().map(|el| el.to_string()).collect();
+
+        let config = Config::build(&args).unwrap();
+        let results = run(config).unwrap();
+
+        assert_eq!(results.len(), 4);
+    }
 }
+

@@ -20,7 +20,7 @@
                     "kind": "lib"
                 }
             },
-            "args": [],
+            "args": ["cli_case_precedence"],
             "cwd": "${workspaceFolder}"
         },
         {
@@ -41,24 +41,5 @@
             "args": ["to", "poem.txt", "true"],
             "cwd": "${workspaceFolder}"
         },
-        {
-            "type": "lldb",
-            "request": "launch",
-            "name": "Debug unit tests in executable 'minigrep'",
-            "cargo": {
-                "args": [
-                    "test",
-                    "--no-run",
-                    "--bin=minigrep",
-                    "--package=minigrep"
-                ],
-                "filter": {
-                    "name": "minigrep",
-                    "kind": "bin"
-                }
-            },
-            "args": [],
-            "cwd": "${workspaceFolder}"
-        }
     ]
 }
