@@ -10,15 +10,29 @@ pub struct Config {
     pub ignore_case: bool,
 }
 
-impl Config {
-    pub fn build(args: &[String]) -> Result<Self, Box<dyn Error>> { 
-        if args.len() < 3 {
-            return Err(Box::<dyn Error>::from("Not enough arguments"));
-        } 
+impl Config { //args: &[String]
+    pub fn build(
+        mut args: impl Iterator<Item = String>
+    ) -> Result<Self, Box<dyn Error>> { 
+        // if args.len() < 3 {
+        //     return Err(Box::<dyn Error>::from("Not enough arguments"));
+        // } 
 
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+        // let query = args[1].clone();
+        // let file_path = args[2].clone();
 
+        args.next();
+
+        let query = match args.next() {
+            Some(query) => query,
+            None => return Err(Box::<dyn Error>::from("Didn't get a query string")),
+        };
+
+        let file_path = match args.next() {
+            Some(file_path) => file_path,
+            None => return Err(Box::<dyn Error>::from("Didn't get a file path")),
+        };
+        
         let ignore_case = if args.len() == 4 {
             let case: Result<bool, ParseBoolError> = args[3]
                 .clone()
