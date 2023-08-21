@@ -32,19 +32,35 @@ impl Config { //args: &[String]
             Some(file_path) => file_path,
             None => return Err(Box::<dyn Error>::from("Didn't get a file path")),
         };
+
+        let (_, remaining) = args.size_hint();
         
-        let ignore_case = if args.len() == 4 {
-            let case: Result<bool, ParseBoolError> = args[3]
-                .clone()
-                .parse();
-            
-            match case {
-                Ok(is_case) => is_case,
-                Err(e) => {
-                    let err_msg = format!("Invalid case flag: {}", e);
-                    return Err(Box::<dyn Error>::from(err_msg));
-                }
+        let ignore_case = if remaining.unwrap_or(0) == 1 {
+            // let case: Result<bool, ParseBoolError> = args[3]
+            //     .clone()
+            //     .parse();
+
+            match args.next() {
+                Some(is_case) => {
+                    let case: Result<bool, ParseBoolError> = is_case.parse();
+                    match case {
+                        Ok(case) => case,
+                        Err(e) => {
+                            let err_msg = format!("Invalid case flag: {}", e);
+                            return Err(Box::<dyn Error>::from(err_msg));
+                        }
+                    }
+                },
+                None => return Err(Box::<dyn Error>::from("Didn't get a case option")),
             }
+            
+            // match case {
+            //     Ok(is_case) => is_case,
+            //     Err(e) => {
+            //         let err_msg = format!("Invalid case flag: {}", e);
+            //         return Err(Box::<dyn Error>::from(err_msg));
+            //     }
+            // }
         } else {
             env::var("IGNORE_CASE").is_ok()
         };
