@@ -85,6 +85,8 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a st
 
 
 
+
+
 #[cfg(test)]
 mod tests {
 
@@ -123,7 +125,7 @@ Trust me.";
         let args = vec![" ", "to", "poem.txt", "false"];
         let args: Vec<String> = args.iter().map(|el| el.to_string()).collect();
 
-        let config = Config::build(&args).unwrap();
+        let config = Config::build(args.into_iter()).unwrap();
         let results = run(config).unwrap();
 
         assert_eq!(results.len(), 2);
@@ -135,7 +137,7 @@ Trust me.";
         let args = vec![" ", "to", "poem.txt", "true"];
         let args: Vec<String> = args.iter().map(|el| el.to_string()).collect();
 
-        let config = Config::build(&args).unwrap();
+        let config = Config::build(args.into_iter()).unwrap();
         let results = run(config).unwrap();
 
         assert_eq!(results.len(), 4);
