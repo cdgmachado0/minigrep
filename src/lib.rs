@@ -85,8 +85,6 @@ pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a st
 
 
 
-
-
 #[cfg(test)]
 mod tests {
 
